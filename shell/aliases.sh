@@ -23,6 +23,8 @@ ws-help() {
     echo "           sra            → maple-api 세션 접속"
     echo "           sd [이름]      → 떼고 접속"
     echo "           so, out        → 지금 세션에서 나가기 (떼기)"
+    echo "           sk [이름]      → 세션 강제 종료 (kill)"
+    echo "           ska            → maple-api 세션 종료"
     echo ""
     echo "  [기타]  gitpull         → git-pull.sh 실행"
     echo ""
@@ -76,6 +78,7 @@ alias mapi='cd /usr/local/workspace/maple-api && ./gradlew bootRun --args="--ser
 # 사용: sra         → maple-api 세션 접속
 # 사용: sd [이름]   → 다른 터미널에서 붙어 있으면 떼고 내가 접속
 # 사용: so / out    → 지금 세션에서 나가기 (떼기, Ctrl+A D 와 동일)
+# 사용: sk [이름] / screenkill [이름] → 세션 강제 종료. ska → maple-api 세션 종료
 alias sl='screen -ls'
 alias screenls='screen -ls'
 alias sr='screen -r'
@@ -84,6 +87,14 @@ alias sra='screen -r maple-api'
 alias sd='screen -d -r'
 alias so='screen -d'
 alias out='screen -d'
+alias ska='screen -X -S maple-api quit'
+alias skf='screen -X -S maple-front quit'
+
+screenkill() {
+    if [ -z "$1" ]; then echo "사용법: screenkill <세션이름>  (목록: sl)"; return 1; fi
+    screen -X -S "$1" quit && echo "세션 '$1' 종료됨"
+}
+sk() { screenkill "$@"; }
 
 # ----- git pull 배치 -----
 alias gitpull='sh /usr/local/workspace/bin/git-pull.sh'
