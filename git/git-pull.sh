@@ -7,11 +7,24 @@ set -e
 WORKSPACE="/usr/local/workspace"
 
 # 현재 브랜치를 원격과 동일하게 맞춤 (로컬 변경 버림)
+# 이미 원격과 동일하면 reset 건너뜀
 do_pull() {
     local dir="$1"
     local name="$2"
     echo "[$name] $dir"
-    cd "$dir" && git fetch origin && git reset --hard "origin/$(git branch --show-current)"
+    cd "$dir" || return 1
+    git fetch origin
+    local branch
+    branch=$(git branch --show-current)
+    local local_rev remote_rev
+    local_rev=$(git rev-parse HEAD)
+    remote_rev=$(git rev-parse "origin/$branch")
+    if [ "$local_rev" = "$remote_rev" ]; then
+        echo "  -> 이미 원격과 동일함, 건너뜀"
+        return 0
+    fi
+    git reset --hard "origin/$branch"
+    echo "  -> 원격 기준으로 갱신 완료"
 }
 
 echo "===== git pull 배치 시작 (원격 기준으로 덮어씀) ====="
