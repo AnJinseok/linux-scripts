@@ -98,4 +98,4 @@ screenkill() {
 sk() { screenkill "$@"; }
 
 # ----- git pull 배치 -----
-alias gitpull='sh /usr/local/workspace/bin/git-pull.sh'
+alias gitpull='sh /usr/local/workspace/linux-scripts/git/git-pull.sh'
