@@ -7,8 +7,9 @@ set -e
 SCRIPT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$SCRIPT_ROOT"
 
-# shell/, git/ 아래 모든 .sh 에 대해 실행 비트 기록
+# shell/, git/, cron/ 아래 모든 .sh 에 대해 실행 비트 기록
 git update-index --chmod=+x shell/*.sh 2>/dev/null || true
 git update-index --chmod=+x git/*.sh   2>/dev/null || true
+git update-index --chmod=+x cron/*.sh  2>/dev/null || true
 
 echo "실행 비트 기록 완료. git status 로 확인 후 커밋·푸시하세요."
