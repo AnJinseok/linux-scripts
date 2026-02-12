@@ -3,11 +3,28 @@
 # 사용법: 서버에서 실행 (sudo 또는 www-data/adm 권한 필요)
 #   bash check-nginx-db-access.sh
 #   또는: sudo bash check-nginx-db-access.sh
+#
+# 결과 저장:
+#   기본: 현재 디렉터리에 nginx-db-access-check-YYYYMMDD-HHMMSS.txt 로 저장
+#   저장 경로 지정: NGINX_DB_CHECK_OUTPUT=/path/to/report.txt bash check-nginx-db-access.sh
+#   저장 디렉터리만 지정: NGINX_DB_CHECK_DIR=/var/reports bash check-nginx-db-access.sh
 
 set -e
 LOG_DIR="${NGINX_LOG_DIR:-/var/log/nginx}"
 ACCESS_GLOB="$LOG_DIR/access.log*"
 ERROR_GLOB="$LOG_DIR/error.log*"
+
+# 검사 결과 저장 파일 (미지정 시 타임스탬프 파일명 사용)
+if [[ -n "${NGINX_DB_CHECK_OUTPUT}" ]]; then
+  REPORT_FILE="$NGINX_DB_CHECK_OUTPUT"
+else
+  REPORT_DIR="${NGINX_DB_CHECK_DIR:-.}"
+  REPORT_FILE="$REPORT_DIR/nginx-db-access-check-$(date +%Y%m%d-%H%M%S).txt"
+  # 저장 디렉터리가 . 이 아니면 없을 경우 생성
+  [[ "$REPORT_DIR" != "." && ! -d "$REPORT_DIR" ]] && mkdir -p "$REPORT_DIR"
+fi
+# 출력을 화면과 파일에 동시에 기록
+exec > >(tee "$REPORT_FILE") 2>&1
 
 # DB/관리 도구 경로 패턴 (access 로그에서 검색)
 # - phpmyadmin, mysql, 3306, admin DB 관련 URI
@@ -104,5 +121,5 @@ done
 
 echo ""
 echo "=============================================="
-echo "검사 완료."
+echo "검사 완료. 결과 저장: $REPORT_FILE"
 echo "=============================================="
