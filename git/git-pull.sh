@@ -32,7 +32,7 @@ echo "===== git pull 배치 시작 (원격 기준으로 덮어씀) ====="
 # ---------- 배치 작업 (아래 줄을 vi 로 수정/추가) ----------
 do_pull "$WORKSPACE/linux-scripts"    "1/4 linux-scripts"
 # pull 후 실행 비트가 빠지므로 .sh 복구 (Windows에서 커밋 시 비트가 저장 안 되는 경우 대비)
-chmod +x shell/*.sh git/*.sh cron/*.sh 2>/dev/null || true
+chmod +x shell/*.sh git/*.sh cron/*.sh system/*.sh 2>/dev/null || true
 do_pull "$WORKSPACE/maple-misc-scripts" "2/4 maple-misc-scripts"
 do_pull "$WORKSPACE/maple-api"         "3/4 maple-api"
 do_pull "$WORKSPACE/maple-front"       "4/4 maple-front"
